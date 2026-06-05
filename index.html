@@ -69,7 +69,8 @@ canvas{display:block;width:100%}
    Prof. Marcos — Colégio Helena Nasser — Anápolis-GO
    Configure APPS_URL com sua URL do Google Apps Script
    ══════════════════════════════════════════════ */
-const APPS_URL = 'YOUR_APPS_SCRIPT_URL_HERE';
+// SUBSTITUA pela URL gerada em: script.google.com → Implantar → App da Web
+const APPS_URL = 'https://script.google.com/macros/s/AKfycbzK-wBG1lkEom9N2VePZq0GU3-x1vPe6zV87PiIcKr8KBIyRbfk3p2FznrJB-mvn1wx/exec';
 
 const CV=document.getElementById('gc');
 const X=CV.getContext('2d');
@@ -589,7 +590,7 @@ function drawParts(){
 }
 
 function sendScore(){
-  if(!APPS_URL||APPS_URL==='YOUR_APPS_SCRIPT_URL_HERE')return;
+  if(!APPS_URL||APPS_URL.includes('COLE_SUA_URL_AQUI')||APPS_URL.includes('YOUR_APPS_SCRIPT'))return;
   const payload={
     nome:playerData.nome,email:playerData.email,
     serie:playerData.serie,turma:playerData.turma,
