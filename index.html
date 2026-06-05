@@ -59,7 +59,7 @@ canvas{display:block;width:100%}
         <option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option>
       </select>
     </div>
-    <button class="btn" id="sb" style="background:#ffe600;color:#000">INICIAR MISSÃO</button>
+    <button class="btn" id="sb" onclick="validateAndStart()" style="background:#ffe600;color:#000">INICIAR MISSÃO</button>
   </div>
 </div>
 
@@ -70,7 +70,7 @@ canvas{display:block;width:100%}
    Configure APPS_URL com sua URL do Google Apps Script
    ══════════════════════════════════════════════ */
 // SUBSTITUA pela URL gerada em: script.google.com → Implantar → App da Web
-const APPS_URL = https://script.google.com/macros/s/AKfycbzK-wBG1lkEom9N2VePZq0GU3-x1vPe6zV87PiIcKr8KBIyRbfk3p2FznrJB-mvn1wx/exec;
+const APPS_URL = 'https://script.google.com/macros/s/AKfycbzK-wBG1lkEom9N2VePZq0GU3-x1vPe6zV87PiIcKr8KBIyRbfk3p2FznrJB-mvn1wx/exec';
 
 const CV=document.getElementById('gc');
 const X=CV.getContext('2d');
@@ -629,10 +629,10 @@ function gameOver(){
     &nbsp;|&nbsp; Melhor: <strong style="color:#aaffaa">${bestScore}</strong>
     &nbsp;|&nbsp; Nível ${level}</p>
     ${gameCount<2
-      ?`<button class="btn" id="sb" style="background:${l2?'#ff6600':'#ffe600'};color:#000">PARTIDA ${gameCount+1}</button>`
-      :`<button class="btn" id="sb" style="background:#44aa44;color:#fff">VER RESULTADO FINAL</button>`}`;
+      ?`<button class="btn" id="sb" onclick="gameCount>=2?showFinalResult():restartGame()" style="background:${l2?'#ff6600':'#ffe600'};color:#000">PARTIDA ${gameCount+1}</button>`
+      :`<button class="btn" id="sb" onclick="showFinalResult()" style="background:#44aa44;color:#fff">VER RESULTADO FINAL</button>`}`;
   ov.classList.add('on');
-  document.getElementById('sb').onclick=()=>{gameCount>=2?showFinalResult():restartGame();};
+  // onclick inline no botão
 }
 
 function showFinalResult(){
@@ -645,8 +645,8 @@ function showFinalResult(){
     <strong style="color:#ffe600;font-size:28px">${bestScore} pts</strong><br>
     Nível máximo: <strong style="color:#aaffaa">${level}</strong><br><br>
     <span style="color:#aaa;font-size:11px">Resultado enviado ao Prof. Marcos!</span></p>
-    <button class="btn" id="sb" style="background:#ffe600;color:#000">JOGAR NOVAMENTE</button>`;
-  document.getElementById('sb').onclick=()=>{gameCount=0;bestScore=0;showRegForm();};
+    <button class="btn" id="sb" onclick="gameCount=0;bestScore=0;showRegForm()" style="background:#ffe600;color:#000">JOGAR NOVAMENTE</button>`;
+  // onclick inline no botão
 }
 
 function showRegForm(){
@@ -661,9 +661,8 @@ function showRegForm(){
       <select id="f-serie"><option value="">Série / Ano</option><option>6º Ano</option><option>7º Ano</option><option>8º Ano</option><option>9º Ano</option><option>1º EM</option><option>2º EM</option><option>3º EM</option></select>
       <select id="f-turma"><option value="">Turma</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option></select>
     </div>
-    <button class="btn" id="sb" style="background:#ffe600;color:#000">INICIAR MISSÃO</button>`;
+    <button class="btn" id="sb" onclick="validateAndStart()" style="background:#ffe600;color:#000">INICIAR MISSÃO</button>`;
   ov.classList.add('on');
-  document.getElementById('sb').onclick=validateAndStart;
 }
 
 function validateAndStart(){
@@ -700,7 +699,22 @@ function restartGame(){
   cancelAnimationFrame(raf);loop();
 }
 
-document.getElementById('sb').onclick=validateAndStart;
+// delegação de clique para capturar botões reinseridos via innerHTML
+document.getElementById('overlay').addEventListener('click', function(e){
+  if(e.target && e.target.id==='sb'){
+    const ov = document.getElementById('overlay');
+    // detecta qual estado estamos
+    if(ov.querySelector('#f-nome') !== null){
+      validateAndStart();
+    } else if(gameCount >= 2){
+      showFinalResult();
+    } else if(gameCount > 0){
+      restartGame();
+    } else {
+      validateAndStart();
+    }
+  }
+});
 </script>
 </body>
 </html>
